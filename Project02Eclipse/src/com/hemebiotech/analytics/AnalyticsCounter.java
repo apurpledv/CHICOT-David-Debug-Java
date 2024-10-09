@@ -16,19 +16,22 @@ public class AnalyticsCounter {
 	private static ISymptomReader reader = null;
 	private static ISymptomWriter writer = null;
 
-	// AnalyticsCounter - CONSTRUCTOR -> initialize the 'reader' (reads through the file and retrieve every symptoms' names) and 'writer' (writes the final output, 
+	// AnalyticsCounter - CONSTRUCTOR -> initializes the 'reader' (reads through the file and retrieve every symptoms' names) and 'writer' (writes the final output, 
 	// that being the number of each symptom found, in a file) objects.
 	public AnalyticsCounter(ISymptomReader reader, ISymptomWriter writer) { 
 		this.reader = reader;
 		this.writer = writer;
 	}
 	
-	// getSymptoms -> retrieve symptoms from the file and returns a list containing each of them.
+	// getSymptoms -> retrieves all the symptoms from the file.
+	// > returns a list containing each of them.
 	public List<String> getSymptoms() { 
 		return reader.GetSymptoms();
 	}
 	
 	// countSymptoms -> counts the number of occurences of each symptom found.
+	// > if it already exists, simply do '+1' to the number of occurences of that symptom
+	// > otherwise add a new entry to the map with "<name_of_symptom>, <1> (first one found)"
 	public Map<String, Integer> countSymptoms(List<String> symptoms) {
 		Map<String, Integer> symptomsCounter = new HashMap<String, Integer>();
 		for (String symptomName : symptoms) {
@@ -41,46 +44,46 @@ public class AnalyticsCounter {
 		return symptomsCounter;
 	}
 	
-	// sortSymptoms -> sort the symptoms alphabetically
+	// sortSymptoms -> sorts the symptoms alphabetically (using TreeMap)
 	public Map<String, Integer> sortSymptoms(Map<String, Integer> symptoms) { 
 		Map<String, Integer> sortedSymtomsList = new TreeMap<>(symptoms);
 		return sortedSymtomsList;
 	}
 	
-	// writeSymptoms -> writes the final output ("<symptom name> : <number of occurences>")in a file.
+	// writeSymptoms -> writes the final output ("<symptom name> : <number of occurences>") in a file.
 	public void writeSymptoms(Map<String, Integer> symptoms) { 
 		writer.writeSymptoms(symptoms);
 	}
 	
-	public static void main(String args[]) throws Exception {
-		/*
-		// first get input
-		BufferedReader reader = new BufferedReader (new FileReader("../symptoms.txt"));
-		String line = reader.readLine();
-
-		int i = 0;
-		int headCount = 0;	// counts headaches
-		while (line != null) {
-			i++;
-			System.out.println("symptom from file: " + line);
-			if (line.equals("headache")) {
-				headacheCount++;
-			}
-			else if (line.equals("rash")) {
-				rashCount++;
-			}
-			else if (line.contains("pupils")) {
-				pupilCount++;
-			}
-
-			line = reader.readLine();	// get another symptom
+	public static void main(String args[]) {
+		ISymptomReader reader = new ReadSymptomDataFromFile("../symptoms.txt");
+		ISymptomWriter writer = new WriteSymptomDataToFile("result.out");
+		
+		// first, we create a new AnalyticsCounter object (containing all the methods we'll need).
+		AnalyticsCounter analyticsObj = new AnalyticsCounter(reader, writer);
+		
+		// then we retreive all the symptoms from the file '../symptoms.txt'.	
+		List<String> symptomsList = new ArrayList<String>();
+		
+		// we check to see if there has been an error while reading the file (aka if it doesn't exist)
+		// > if so, stop processing with an error message.
+		try {
+			symptomsList = analyticsObj.getSymptoms();
+		} catch (Exception e) {
+			return;
 		}
 		
-		// next generate output
-		FileWriter writer = new FileWriter ("result.out");
-		writer.write("headache: " + headacheCount + "\n");
-		writer.write("rash: " + rashCount + "\n");
-		writer.write("dialated pupils: " + pupilCount + "\n");
-		writer.close();*/
+		// next, we count the number of occurences of each symptom.
+		Map<String, Integer> symptomsMap = analyticsObj.countSymptoms(symptomsList);
+		
+		// after that we sort the symptoms alphabetically.
+		Map<String, Integer> sortedSymptomsMap = analyticsObj.sortSymptoms(symptomsMap);
+		
+		// finally, we write each symptom along with its number of occurences in a file ('result.out').
+		analyticsObj.writeSymptoms(sortedSymptomsMap);
+		
+		System.out.println("Symptoms listed and sorted successfully.");
+		
+		return;
 	}
 }

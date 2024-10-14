@@ -22,8 +22,13 @@ public class ReadSymptomDataFromFile implements ISymptomReader {
 		this.filepath = filepath;
 	}
 	
+	/**
+	 * 
+	 * @return List
+	 * a list of Strings containing every symptom found within the file
+	 */
 	@Override
-	public List<String> GetSymptoms() {
+	public List<String> getSymptoms() {
 		ArrayList<String> result = new ArrayList<String>();
 		
 		if (filepath != null) {
@@ -40,6 +45,10 @@ public class ReadSymptomDataFromFile implements ISymptomReader {
 				System.out.println("Error! File named '" + filepath + "' not found.");
 				result.set(0, "ERROR");
 			}
+		}
+		
+		if (result.isEmpty()) {
+			System.out.println("Error! No symptom found.");
 		}
 		
 		return result;

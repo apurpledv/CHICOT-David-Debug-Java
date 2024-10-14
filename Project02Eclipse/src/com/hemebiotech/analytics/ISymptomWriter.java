@@ -4,9 +4,9 @@ import java.util.Map;
 
 public interface ISymptomWriter {
 	/**
-	 * If no data is available, return an empty List
+	 * Writes every symptom found along with their number of occurences
 	 * 
-	 * @return a raw listing of all Symptoms obtained from a data source, duplicates are possible/probable
+	 * @param a list containing each time: <name of symptom>, <number of occurences>
 	 */
 	public void writeSymptoms(Map<String, Integer> symptoms);
 }

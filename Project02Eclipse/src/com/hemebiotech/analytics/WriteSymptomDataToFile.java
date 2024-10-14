@@ -21,6 +21,11 @@ public class WriteSymptomDataToFile implements ISymptomWriter {
 		this.filepath = filepath;
 	}
 	
+	/**
+	 * Writes every symptom found along with their number of occurences in the file at filepath
+	 * 
+	 * @param a list containing each time: <name of symptom>, <number of occurences>
+	 */
 	public void writeSymptoms(Map<String, Integer> symptoms) {
 		try {
 			FileWriter writer = new FileWriter (filepath);
@@ -28,7 +33,7 @@ public class WriteSymptomDataToFile implements ISymptomWriter {
 				writer.write(eachSymptom.getKey() + " : " + eachSymptom.getValue() + "\n");
 			}
 			 writer.close();		
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.out.println("Error! Cannot write within the file named '" + filepath + "'.");
 		}
 	}
